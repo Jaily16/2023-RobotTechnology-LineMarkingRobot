@@ -1,0 +1,100 @@
+#VRML_SIM R2021a utf8
+WorldInfo {
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation -0.7599763609148997 0.6452469689207325 0.07805305855091854 0.17613236197415405
+  position 35.851297841345925 1.2474850118244303 19.491385477020664
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+UnevenTerrain {
+  name "lawn"
+  size 100 1 100
+  appearance SandyGround {
+    colorOverride 0.333333 0.666667 0
+    textureTransform TextureTransform {
+      scale 50 50
+    }
+  }
+  flatCenter TRUE
+}
+BigSassafras {
+  translation -32 0 40
+}
+BigSassafras {
+  translation -38.3 0 29.3
+  name "sassafras tree(1)"
+}
+BigSassafras {
+  translation 22 0 43
+  name "sassafras tree(2)"
+}
+BigSassafras {
+  translation 42 0 -41
+  name "sassafras tree(3)"
+}
+Pine {
+  translation 3 0 39
+}
+Pine {
+  translation 4 0 -43.5
+  name "pine tree(1)"
+}
+Pine {
+  translation 40 0 27.5
+  name "pine tree(2)"
+}
+Pine {
+  translation 46 0 -1
+  name "pine tree(3)"
+}
+Pine {
+  translation -39.4 0 -34
+  name "pine tree(4)"
+}
+Pine {
+  translation -16 0 -43.2
+  name "pine tree(5)"
+}
+Pine {
+  translation -42.3 0 0.5
+  name "pine tree(6)"
+}
+Pine {
+  translation -24.6 0 36
+  name "pine tree(7)"
+}
+Sassafras {
+  translation 19 0 33
+  name "sassafras tree(4)"
+}
+Sassafras {
+  translation -25.6 0 -40
+  name "sassafras tree(5)"
+}
+Sassafras {
+  translation 39 0 0
+  name "sassafras tree(6)"
+}
+Sassafras {
+  translation 36 0 -36.4
+  name "sassafras tree(7)"
+}
+Sassafras {
+  translation 19 0 -35.9
+  name "sassafras tree(8)"
+}
+Swing {
+  translation 36 0 36
+  rotation 0 1 0 -2.3561953071795863
+}
+Slide {
+  translation -39 0 -10
+}
+Bench {
+  translation 36.5 0.55 -14.9
+  rotation 0 1 0 -1.5707953071795862
+}
