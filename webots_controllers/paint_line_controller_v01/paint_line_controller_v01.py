@@ -15,11 +15,13 @@ class Direction(enum.Enum):
 # 定义MyRobot来对画线机器人进行进一步封装
 class MyRobot:
     # 定义画线机器人的常量值
-    GO_SPEED = 0.5  # m/s
+    GO_SPEED = 0.5  # 向前运动的速度 m/s
+    ADJUST_SPEED = 0.01  # 偏移路线时回正的速度 m/s
     TURN_SPEED = 0.05  # m/s
     CIRCLE_SPEED = 0.1  # m/s
     SWITCH = 10.274509
     WIDTH = 0.325
+    ADJUST_ANGLE = 0.05  # 需要路线修正的偏移角阈值
 
     # 定义一些函数中要用到的中间量
     lastStepTime = -1.0
@@ -72,17 +74,17 @@ class MyRobot:
         self.totalDistance += addDistance
         self.lastStepTime = self.nowTime
 
-    def goStraightOriginal(self, distance):
-        if self.goFinished:
-            return
-        if self.totalDistance < distance:
-            self.setSpeed(self.GO_SPEED, self.GO_SPEED)
-            self.addLineDistance()
-        else:
-            self.setSpeed(0, 0)
-            self.lastStepTime = -1.0
-            self.totalDistance = 0.0
-            self.goFinished = True
+    # def goStraightOriginal(self, distance):
+    #     if self.goFinished:
+    #         return
+    #     if self.totalDistance < distance:
+    #         self.setSpeed(self.GO_SPEED, self.GO_SPEED)
+    #         self.addLineDistance()
+    #     else:
+    #         self.setSpeed(0, 0)
+    #         self.lastStepTime = -1.0
+    #         self.totalDistance = 0.0
+    #         self.goFinished = True
 
     # 机器人直线移动一定距离
     def goStraight(self, distance):
@@ -93,15 +95,42 @@ class MyRobot:
             self.startPos = [self.gps.getValues()[0], self.gps.getValues()[2]]
             return
         nowPos = [self.gps.getValues()[0], self.gps.getValues()[2]]
+
         # 计算机器人走过的距离
         self.totalDistance = pow(pow(nowPos[0] - self.startPos[0], 2) + pow(nowPos[1] - self.startPos[1], 2), 0.5)
         # 如果走过的距离没达到设定的长度，继续向前走; 否则让机器人停下来
         if self.totalDistance < distance:
-            self.setSpeed(self.GO_SPEED, self.GO_SPEED)
+            leftSpeed = self.GO_SPEED
+            rightSpeed = self.GO_SPEED
+            # 对行走方向进行修正
+            # 初始化开始的角度
+            if self.startAngle == -100.0:
+                self.startAngle = self.imu.getRollPitchYaw()[2]
+            nowAngle = self.imu.getRollPitchYaw()[2]
+            # 计算偏移的角度，若数值超过设定的阈值则进行两轮速度差的微调
+            biasAngle = nowAngle - self.startAngle
+            # 假如此时角度刚好转够3.14rad则会发生数值从-3.14突变到3.14(或从3.14突变到-3.14)的情况因此要进行特殊处理
+            if self.startAngle * nowAngle < 0 and nowAngle > 1.5:
+                if nowAngle < 0:
+                    nowAngle = 2 * math.pi - abs(nowAngle)
+                    biasAngle = self.startAngle - nowAngle
+                else:
+                    nowAngle = -(2 * math.pi - nowAngle)
+                    biasAngle = self.startAngle - nowAngle
+            if abs(biasAngle) >= self.ADJUST_ANGLE:
+                # 向右偏移
+                if biasAngle < 0:
+                    leftSpeed -= self.ADJUST_SPEED
+                    rightSpeed += self.ADJUST_SPEED
+                else:
+                    leftSpeed += self.ADJUST_SPEED
+                    rightSpeed -= self.ADJUST_SPEED
+            self.setSpeed(leftSpeed, rightSpeed)
         else:
             self.setSpeed(0, 0)
             self.totalDistance = 0.0
             self.startPos = None
+            self.startAngle = -100.0
             self.goFinished = True
 
     # 机器人向左或向右转向某个角度
@@ -152,6 +181,7 @@ class MyRobot:
             self.circleFinished = True
 
     # 机器人画一个圆
+    # TODO 增加功能，画半圆以及1/4圆
     def circle(self, radius):
         if self.circleFinished:
             return
@@ -243,7 +273,7 @@ myRobot = MyRobot()
 
 while myRobot.robot.step(myRobot.timestep) != -1:
     # myRobot.turn(Direction.LEFT, math.pi / 2)
-    myRobot.paintRectangle(5, 3)
+    myRobot.paintRectangle(8, 4.9)
     # myRobot.goStraight(20)
     # myRobot.circle(2.5)
 
