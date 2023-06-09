@@ -7,9 +7,17 @@ import enum
 import math
 
 
+# 定义方向枚举
 class Direction(enum.Enum):
     LEFT = 1
     RIGHT = 2
+
+
+# 定义画圆的类型
+class CircleType(enum.Enum):
+    CIRCLE = 1
+    SEMI = 2
+    QUARTER = 3
 
 
 # 定义MyRobot来对画线机器人进行进一步封装
@@ -162,44 +170,63 @@ class MyRobot:
             self.startAngle = -100.0
             self.turnFinished = True
 
-    def circleAnyAngle(self, radius, angle):
-        # TODO: 解决画任意角度的圆弧问题
-        if angle < 0 or angle > 2 * math.pi:
-            print("not reasonable")
-            return
-        if self.circleFinished:
-            return
-        distance = radius * angle
-        if self.totalDistance < distance:
-            vl = self.CIRCLE_SPEED * ((radius + self.WIDTH / 2) / radius)
-            vr = self.CIRCLE_SPEED * ((radius - self.WIDTH / 2) / radius)
-            self.setSpeed(vl, vr)
-            self.addLineDistance()
-        else:
-            self.setSpeed(0, 0)
-            self.totalDistance = 0.0
-            self.circleFinished = True
+    # def circleAnyAngle(self, radius, angle):
+    #     # TODO: 解决画任意角度的圆弧问题
+    #     if angle < 0 or angle > 2 * math.pi:
+    #         print("not reasonable")
+    #         return
+    #     if self.circleFinished:
+    #         return
+    #     distance = radius * angle
+    #     if self.totalDistance < distance:
+    #         vl = self.CIRCLE_SPEED * ((radius + self.WIDTH / 2) / radius)
+    #         vr = self.CIRCLE_SPEED * ((radius - self.WIDTH / 2) / radius)
+    #         self.setSpeed(vl, vr)
+    #         self.addLineDistance()
+    #     else:
+    #         self.setSpeed(0, 0)
+    #         self.totalDistance = 0.0
+    #         self.circleFinished = True
 
-    # 机器人画一个圆
-    # TODO 增加功能，画半圆以及1/4圆
-    def circle(self, radius):
+    # 机器人画一个圆、半圆或1/4圆(向机器人的右边画)
+    def circle(self, radius, c_type):
         if self.circleFinished:
             return
         if self.startPos is None:
             # 初始化机器人的位置
             self.startPos = [self.gps.getValues()[0], self.gps.getValues()[2]]
-        # 机器人走过的距离
-        distance = radius * math.pi * 2
+            # 初始化机器人面向的角度
+            self.startAngle = self.imu.getRollPitchYaw()[2]
+        # 机器人需要走过的距离
+        distance = 0
+        # 机器人与终点的距离(用于判断画圆是否完成)
+        distanceToEnd = 0
         # 机器人最小要走过的距离(用于结束位置的判断和确定)
-        minDis = radius * math.pi * 0.5
+        minDis = radius * math.pi * 0.3
         # 当前机器人的位置
         nowPos = [self.gps.getValues()[0], self.gps.getValues()[2]]
-        # 机器人与起始点的距离(用于判断画圆是否完成)
-        distanceToStart = pow(pow(nowPos[0] - self.startPos[0], 2) + pow(nowPos[1] - self.startPos[1], 2), 0.5)
+        if c_type == CircleType.CIRCLE:
+            distanceToEnd = pow(pow(nowPos[0] - self.startPos[0], 2) + pow(nowPos[1] - self.startPos[1], 2), 0.5)
+            distance = radius * math.pi * 2
+        else:
+            radiusAngle = self.startAngle - math.pi / 2
+            # 处理从调整后角度小于-3.14的情况,将其调整回正向角
+            if radiusAngle < -math.pi:
+                radiusAngle = math.pi - (math.pi / 2 - (self.startAngle + math.pi))
+            if c_type == CircleType.SEMI:
+                endPos = [self.startPos[0] - math.sin(radiusAngle) * 2 * radius,
+                          self.startPos[1] - math.cos(radiusAngle) * 2 * radius]
+                distance = radius * math.pi
+            else:
+                endPos = [self.startPos[0] - math.sin(radiusAngle) * radius - math.sin(self.startAngle) * radius,
+                          self.startPos[1] + math.cos(radiusAngle) * radius - math.cos(self.startAngle) * radius]
+                distance = radius * math.pi / 2
+            distanceToEnd = pow(pow(nowPos[0] - endPos[0], 2) + pow(nowPos[1] - endPos[1], 2), 0.5)
+
         # 用圆的周长来对画过的距离进行限定，防止无限循环
         if self.totalDistance < distance:
             # 如果与起始点的距离小于2cm就认为画圆完成，停止机器人的运动
-            if self.totalDistance > minDis and distanceToStart < 0.02:
+            if self.totalDistance > minDis and distanceToEnd < 0.02:
                 self.setSpeed(0, 0)
                 self.totalDistance = 0.0
                 self.startPos = None
@@ -273,7 +300,6 @@ myRobot = MyRobot()
 
 while myRobot.robot.step(myRobot.timestep) != -1:
     # myRobot.turn(Direction.LEFT, math.pi / 2)
-    myRobot.paintRectangle(8, 4.9)
+    # myRobot.paintRectangle(8, 4.9)
     # myRobot.goStraight(20)
-    # myRobot.circle(2.5)
-
+    myRobot.circle(2.5, CircleType.QUARTER)
