@@ -3,8 +3,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.14301384895909205 0.9765817437623482 0.16073312277187088 1.710837053993563
-  position 22.019129555182513 8.169131570028815 0.7189248373913693
+  orientation -0.017383064240752134 0.9782722213984164 0.20659450602039242 2.9773373832284125
+  position 1.919398987680708 10.415330338606779 -17.172431802752026
 }
 TexturedBackground {
 }
@@ -108,7 +108,7 @@ Wall {
   }
 }
 Solid {
-  translation 20 0 0
+  translation 20.69 0 0
   scale 1.8 1.8 1.8
   children [
     RobotstadiumGoal {
@@ -116,7 +116,7 @@ Solid {
   ]
 }
 Solid {
-  translation -20 0 0
+  translation -20.4 0 -1.06163e-06
   rotation 0 1 0 3.14159
   scale 1.8 1.8 1.8
   children [
@@ -147,8 +147,8 @@ Wall {
   size 1.86 1.05 0.2
 }
 Robot {
-  translation -1.7129704497020932 0.1197698227322733 3.0786263389978257
-  rotation -5.852921564660802e-06 0.9999070086375949 -0.013637230039861602 3.1390167773999607
+  translation 0 0.128168 10
+  rotation 0.95254914354587 0.30392484215022336 0.016727804816876364 0
   children [
     GPS {
       children [
@@ -199,6 +199,7 @@ Robot {
       inkColor 1 1 1
       inkDensity 0.4
       leadSize 0.08
+      write FALSE
     }
     DEF BODY Transform {
       rotation 1 0 0 0
@@ -724,23 +725,23 @@ Robot {
     }
     DEF CASTER_WHEEL HingeJoint {
       jointParameters HingeJointParameters {
-        position 0.07837281555160566
+        position 0.0016165584746177376
         axis 0 1 0
         anchor 0 -0.0011939 0.191844
         staticFriction 0.05
       }
       endPoint Solid {
         translation 0 -0.0011939 0.191844
-        rotation 0 0.9999999999999999 0 0.07837281555160641
+        rotation 0 1 0 0.0016165584745814854
         children [
           DEF casterWheelRim HingeJoint {
             jointParameters HingeJointParameters {
-              position -28118.98363241786
+              position -36075.99369699533
               anchor 0 -0.0521014 0.012843
             }
             endPoint Solid {
               translation 0 -0.0521014 0.012843
-              rotation 1 0 0 4.553802517967698
+              rotation 1 0 0 2.0563368298586506
               children [
                 DEF CASTER_WHEEL_RIM_SHAPE Shape {
                   appearance PBRAppearance {
@@ -818,8 +819,6 @@ Robot {
               }
               physics Physics {
               }
-              linearVelocity 3.5871381749870165e-07 6.669537184635101e-06 3.8703723034493496e-07
-              angularVelocity 1.0435032417381365e-05 2.426642685744192e-07 -3.5414030296291417e-06
             }
           }
           DEF FORK_SHAPE Shape {
@@ -877,8 +876,6 @@ Robot {
         }
         physics Physics {
         }
-        linearVelocity 2.4382846342080636e-07 6.630646064789092e-06 3.999179541138263e-07
-        angularVelocity -6.880481486468522e-10 2.6430610403413984e-07 -2.7557066688918094e-06
       }
     }
     DEF GREEN_LED LED {
@@ -905,7 +902,7 @@ Robot {
     }
     DEF LEFT_WHEEL HingeJoint {
       jointParameters HingeJointParameters {
-        position 12569.22238314378
+        position 15836.789729224443
         axis -1 0 0
         anchor -0.165 -0.0001156 0
       }
@@ -920,7 +917,7 @@ Robot {
       ]
       endPoint Solid {
         translation -0.165 -0.0001156 0
-        rotation -1 0 0 2.851768784607508
+        rotation -1 0 0 3.162755131885441
         children [
           DEF BLACK_CYLINDER_SHAPE Shape {
             appearance PBRAppearance {
@@ -1084,8 +1081,6 @@ Robot {
         }
         physics Physics {
         }
-        linearVelocity 1.6315084443491552e-07 6.180994505614446e-06 2.716639728439584e-07
-        angularVelocity 4.779187148500745e-08 2.5224679099986114e-07 -2.77717586638611e-06
       }
     }
     DEF LOWER_YELLOW_LED LED {
@@ -1185,7 +1180,7 @@ Robot {
     }
     DEF RIGHT_WHEEL HingeJoint {
       jointParameters HingeJointParameters {
-        position 12069.728766126123
+        position 15082.534501358203
         axis -1 0 0
         anchor 0.165032 -0.0001156 0
       }
@@ -1200,7 +1195,7 @@ Robot {
       ]
       endPoint Solid {
         translation 0.165032 -0.0001156 0
-        rotation -1 0 0 6.01297634131741
+        rotation -1 0 0 2.8897641271952157
         children [
           DEF RIGHT_BLACK_CYLINDER_SHAPE Shape {
             appearance PBRAppearance {
@@ -1280,8 +1275,6 @@ Robot {
         boundingObject USE BOUNDING_WHEEL
         physics Physics {
         }
-        linearVelocity 1.1644122929902782e-07 7.092079605325354e-06 5.671227373430188e-07
-        angularVelocity 1.0406481842057211e-07 2.522675889653952e-07 -2.7813334074975456e-06
       }
     }
     DEF SO_0 DistanceSensor {
@@ -3220,6 +3213,4 @@ Robot {
     ]
   }
   controller "<extern>"
-  linearVelocity 3.7167100307481485e-07 6.595596560105536e-06 4.126324556374136e-07
-  angularVelocity -2.2692433425453054e-09 2.5224018716140174e-07 -2.770821059338923e-06
 }
