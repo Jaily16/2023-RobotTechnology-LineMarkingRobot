@@ -1,6 +1,10 @@
 # 2023-RobotTechnology-LineMarkingRobot
 This is the final project for Robotic Technology course of Tongji University in 2023.
 
+# How to use environments and the robot model in your Webots
+
+First make sure your webots version is R2021a, then use webots to open the .wbt file in the 2023-RobotTechnology-LineMarkingRobot/webots_environment/xxxenvironment/worlds/. After open the world, you can import Robot.wbo to use the robot model.
+
 # How to run controller in your IDE 
 
 ## PyCharm
